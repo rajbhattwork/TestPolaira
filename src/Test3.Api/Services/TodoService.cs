@@ -18,4 +18,18 @@ public sealed class TodoService : ITodoService
         _items[item.Id] = item;
         return item;
     }
+
+    /// <inheritdoc />
+    public TodoItem Update(Guid id, string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            throw new ArgumentException("Todo text must not be empty or whitespace.", nameof(text));
+
+        if (!_items.TryGetValue(id, out var existing))
+            throw new KeyNotFoundException($"Todo item '{id}' not found.");
+
+        var updated = existing with { Text = text.Trim() };
+        _items[id] = updated;
+        return updated;
+    }
 }

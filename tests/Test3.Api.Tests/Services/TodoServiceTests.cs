@@ -62,4 +62,59 @@ public class TodoServiceTests
 
         Assert.Equal(text.Trim(), result.Text);
     }
+
+    [Fact]
+    public void Update_WithValidText_ReturnsItemWithNewText()
+    {
+        var created = _sut.Create("Original");
+
+        var result = _sut.Update(created.Id, "Updated");
+
+        Assert.Equal("Updated", result.Text);
+    }
+
+    [Fact]
+    public void Update_PreservesIdAndCreatedAt()
+    {
+        var created = _sut.Create("Original");
+
+        var result = _sut.Update(created.Id, "Updated");
+
+        Assert.Equal(created.Id, result.Id);
+        Assert.Equal(created.CreatedAt, result.CreatedAt);
+    }
+
+    [Fact]
+    public void Update_WithEmptyText_ThrowsArgumentException()
+    {
+        var created = _sut.Create("Original");
+
+        Assert.Throws<ArgumentException>(() => _sut.Update(created.Id, ""));
+    }
+
+    [Fact]
+    public void Update_WithWhitespaceText_ThrowsArgumentException()
+    {
+        var created = _sut.Create("Original");
+
+        Assert.Throws<ArgumentException>(() => _sut.Update(created.Id, "   "));
+    }
+
+    [Fact]
+    public void Update_WithUnknownId_ThrowsKeyNotFoundException()
+    {
+        Assert.Throws<KeyNotFoundException>(() => _sut.Update(Guid.NewGuid(), "Updated"));
+    }
+
+    [Theory]
+    [InlineData("  padded  ")]
+    [InlineData("\ttabbed\t")]
+    public void Update_TrimsWhitespaceFromValidText(string text)
+    {
+        var created = _sut.Create("Original");
+
+        var result = _sut.Update(created.Id, text);
+
+        Assert.Equal(text.Trim(), result.Text);
+    }
 }
