@@ -1,3 +1,24 @@
+# .NET build outputs
+bin/
+obj/
+publish/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Generated XML documentation
+*.xml
+
 # Node
 node_modules/
 dist/
